@@ -28,6 +28,106 @@ void	Diccionario(char* szNombre, char szPalabras[][TAMTOKEN], int iEstadisticas[
 	//iNumElementos = 1;
 	//strcpy(szPalabras[0], "AquiVaElDiccionario");
 	//iEstadisticas[0] = 1; // la primer palabra aparece solo una vez.
+	iNumElementos = 0;
+	if (!szNombre) return;
+
+	FILE* fp;
+	fopen_s(&fp, szNombre, "r");
+	if (!fp) return;
+
+	char palabra[TAMTOKEN];
+	int k = 0;
+	int ch;
+
+	while ((ch = fgetc(fp)) != EOF)
+	{
+		char c = (char)ch;
+
+		if (c == ' ' || c == '\t' || c == '\n' || c == '\r' ||
+			c == '.' || c == ',' || c == ';' || c == '(' || c == ')')
+		{
+			if (k > 0)
+			{
+				palabra[k] = 0;
+
+				int pos = -1;
+				for (int i = 0; i < iNumElementos; i++)
+				{
+					if (strcmp(szPalabras[i], palabra) == 0)
+					{
+						pos = i;
+						break;
+					}
+				}
+
+				if (pos != -1)
+				{
+					iEstadisticas[pos]++;
+				}
+				else
+				{
+					int i = iNumElementos - 1;
+					while (i >= 0 && strcmp(palabra, szPalabras[i]) < 0)
+					{
+						strcpy_s(szPalabras[i + 1], TAMTOKEN, szPalabras[i]);
+						iEstadisticas[i + 1] = iEstadisticas[i];
+						i--;
+					}
+
+					strcpy_s(szPalabras[i + 1], TAMTOKEN, palabra);
+					iEstadisticas[i + 1] = 1;
+					iNumElementos++;
+				}
+
+				k = 0;
+			}
+		}
+		else
+		{
+			if (c >= 'A' && c <= 'Z')
+				c = c - 'A' + 'a';
+
+			if (k < TAMTOKEN - 1)
+				palabra[k++] = c;
+		}
+	}
+
+	if (k > 0)
+	{
+		palabra[k] = 0;
+
+		int pos = -1;
+		for (int i = 0; i < iNumElementos; i++)
+		{
+			if (strcmp(szPalabras[i], palabra) == 0)
+			{
+				pos = i;
+				break;
+			}
+		}
+
+		if (pos != -1)
+		{
+			iEstadisticas[pos]++;
+		}
+		else
+		{
+			int i = iNumElementos - 1;
+			while (i >= 0 && strcmp(palabra, szPalabras[i]) < 0)
+			{
+				strcpy_s(szPalabras[i + 1], TAMTOKEN, szPalabras[i]);
+				iEstadisticas[i + 1] = iEstadisticas[i];
+				i--;
+			}
+
+			strcpy_s(szPalabras[i + 1], TAMTOKEN, palabra);
+			iEstadisticas[i + 1] = 1;
+			iNumElementos++;
+		}
+	}
+
+	fclose(fp);
+
 }
 
 	/*****************************************************************************************************************
