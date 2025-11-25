@@ -153,6 +153,8 @@ void ListaCandidatas(
 	int& iNumLista)							//Cantidad final
 
 {
+	
+
 	//Sustituya estas lineas por su código
 	//strcpy(szListaFinal[0], szPalabrasSugeridas[ 0] ); //la palabra candidata
 	//iPeso[0] = iEstadisticas[0];			// el peso de la palabra candidata
@@ -171,6 +173,75 @@ void	ClonaPalabras(
 	char	szPalabrasSugeridas[][TAMTOKEN], 	//Lista de palabras clonadas
 	int& iNumSugeridas)						//Numero de elementos en la lista
 {
+	iNumSugeridas = 0;
+	int n = strlen(szPalabraLeida);
+
+	char letras[] = "abcdefghijklmnopqrstuvwxyzñáéíóú";
+
+	strcpy_s(szPalabrasSugeridas[iNumSugeridas++], TAMTOKEN, szPalabraLeida);
+
+	for (int i = 0; i < n; i++)
+	{
+		char temp[TAMTOKEN];
+		int k = 0;
+		for (int j = 0; j < n; j++)
+			if (j != i)
+				temp[k++] = szPalabraLeida[j];
+		temp[k] = 0;
+
+		strcpy_s(szPalabrasSugeridas[iNumSugeridas++], TAMTOKEN, temp);
+	}
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		char temp[TAMTOKEN];
+		strcpy_s(temp, szPalabraLeida);
+
+		char c = temp[i];
+		temp[i] = temp[i + 1];
+		temp[i + 1] = c;
+
+		strcpy_s(szPalabrasSugeridas[iNumSugeridas++], TAMTOKEN, temp);
+	}
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; letras[j] != 0; j++)
+		{
+			char temp[TAMTOKEN];
+			strcpy_s(temp, szPalabraLeida);
+			temp[i] = letras[j];
+
+			strcpy_s(szPalabrasSugeridas[iNumSugeridas++], TAMTOKEN, temp);
+		}
+
+	for (int pos = 0; pos <= n; pos++)
+		for (int j = 0; letras[j] != 0; j++)
+		{
+			char temp[TAMTOKEN];
+			int k = 0;
+
+			for (int i = 0; i < pos; i++)
+				temp[k++] = szPalabraLeida[i];
+
+			temp[k++] = letras[j];
+
+			for (int i = pos; i < n; i++)
+				temp[k++] = szPalabraLeida[i];
+
+			temp[k] = 0;
+
+			strcpy_s(szPalabrasSugeridas[iNumSugeridas++], TAMTOKEN, temp);
+		}
+
+	for (int i = 0; i < iNumSugeridas - 1; i++)
+		for (int j = i + 1; j < iNumSugeridas; j++)
+			if (strcmp(szPalabrasSugeridas[i], szPalabrasSugeridas[j]) > 0)
+			{
+				char tmp[TAMTOKEN];
+				strcpy_s(tmp, szPalabrasSugeridas[i]);
+				strcpy_s(szPalabrasSugeridas[i], szPalabrasSugeridas[j]);
+				strcpy_s(szPalabrasSugeridas[j], tmp);
+			}
 	//Sustituya estas lineas por su código
 	//strcpy(szPalabrasSugeridas[0], szPalabraLeida); //lo que sea que se capture, es sugerencia
 	//iNumSugeridas = 1;							//Una sola palabra sugerida
