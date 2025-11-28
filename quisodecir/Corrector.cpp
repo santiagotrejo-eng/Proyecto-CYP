@@ -153,7 +153,40 @@ void ListaCandidatas(
 	int& iNumLista)							//Cantidad final
 
 {
-	
+	int count = 0;
+
+	for (int i = 0; i < iNumSugeridas; i++)
+	{
+		char* pal = szPalabrasSugeridas[i];
+
+		for (int j = 0; j < iNumElementos; j++)
+		{
+			if (strcmp(pal, szPalabras[j]) == 0)
+			{
+				strcpy_s(szListaFinal[count], TAMTOKEN, pal);
+				iPeso[count] = iEstadisticas[j];
+				count++;
+				break;
+			}
+		}
+	}
+
+	for (int i = 0; i < count - 1; i++)
+		for (int j = i + 1; j < count; j++)
+			if (iPeso[j] > iPeso[i])
+			{
+				int aux = iPeso[i];
+				iPeso[i] = iPeso[j];
+				iPeso[j] = aux;
+
+				char tmp[TAMTOKEN];
+				strcpy_s(tmp, szListaFinal[i]);
+				strcpy_s(szListaFinal[i], szListaFinal[j]);
+				strcpy_s(szListaFinal[j], tmp);
+			}
+
+	iNumLista = count;
+
 
 	//Sustituya estas lineas por su código
 	//strcpy(szListaFinal[0], szPalabrasSugeridas[ 0] ); //la palabra candidata
